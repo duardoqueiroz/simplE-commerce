@@ -22,8 +22,8 @@ import FindUserUseCase from "./modules/user/use-cases/implementations/find-user-
 import SignInUseCase from "./modules/user/use-cases/implementations/sign-in-use-case";
 import IsAdminMiddleware from "./presentation/middlewares/is-admin-middleware";
 import IsAuthenticatedMiddleware from "./presentation/middlewares/is-authenticated-middleware";
-import { LoggedUserIsTargetUserMiddleware } from "./presentation/middlewares/logged-user-is-target-user";
-import { LoggedUserIsTargetUserItemMiddleware } from "./presentation/middlewares/logged-user-is-target-user-item";
+import LoggedUserIsTargetUserMiddleware from "./presentation/middlewares/logged-user-is-target-user";
+import LoggedUserIsTargetUserItemMiddleware from "./presentation/middlewares/logged-user-is-target-user-item";
 import ExpressServer from "./presentation/servers/express-server";
 import TokenGenerator from "./services/token-generator";
 
@@ -63,7 +63,7 @@ const isAuthenticatedMiddleware = new IsAuthenticatedMiddleware(
 );
 const loggedUserIsTargetUserMiddleware = new LoggedUserIsTargetUserMiddleware();
 const loggedUserIsTargetUserItemMiddleware =
-	new LoggedUserIsTargetUserItemMiddleware(userRepositoy, itemRepository);
+	new LoggedUserIsTargetUserItemMiddleware(itemRepository);
 const isAdminMiddleware = new IsAdminMiddleware(userRepositoy);
 // -------------- ROUTES --------------
 server.register("post", "/sign-up", signUpHandler);

@@ -2,10 +2,11 @@ import HttpMiddleware from "../../contracts/http/http-middleware";
 import { HttpResponse } from "../../contracts/http/http-response";
 import MiddlewareRequest from "../../contracts/http/middleware-request";
 import { objectKeyExists } from "../../helpers/ObjectsHelper";
-import IUserRepository from "../../modules/user/repositories/contracts/user-repository";
 import UnauthorizedResponse from "../http-responses/unathorized-error-response";
 
-export class LoggedUserIsTargetUserMiddleware implements HttpMiddleware {
+export default class LoggedUserIsTargetUserMiddleware
+	implements HttpMiddleware
+{
 	constructor() {}
 
 	public async handle(

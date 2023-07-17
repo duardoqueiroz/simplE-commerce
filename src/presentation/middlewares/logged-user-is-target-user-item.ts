@@ -3,14 +3,12 @@ import { HttpResponse } from "../../contracts/http/http-response";
 import MiddlewareRequest from "../../contracts/http/middleware-request";
 import { objectKeyExists } from "../../helpers/ObjectsHelper";
 import IItemRepository from "../../modules/item/repositories/contracts/item-repository";
-import IUserRepository from "../../modules/user/repositories/contracts/user-repository";
 import UnauthorizedResponse from "../http-responses/unathorized-error-response";
 
-export class LoggedUserIsTargetUserItemMiddleware implements HttpMiddleware {
-	constructor(
-		private readonly userRepository: IUserRepository,
-		private readonly itemRepository: IItemRepository
-	) {}
+export default class LoggedUserIsTargetUserItemMiddleware
+	implements HttpMiddleware
+{
+	constructor(private readonly itemRepository: IItemRepository) {}
 
 	public async handle(
 		request: MiddlewareRequest
