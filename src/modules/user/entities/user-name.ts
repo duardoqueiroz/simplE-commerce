@@ -1,5 +1,5 @@
 import { Either, left, right } from "../../../helpers/Either";
-import InvalidNameError from "../../../presentation/errors/invalid-name-error";
+import InvalidNameError from "../../../presentation/errors/domain/invalid-name-error";
 
 export default class UserName {
 	private constructor(private readonly _value: string) {}
@@ -8,12 +8,16 @@ export default class UserName {
 		let errorMessages: string[] = [];
 		if (!value) {
 			errorMessages.push("Name is required");
-		}
-		if (value.length < 3) {
-			errorMessages.push("Name must be at least 3 characters long");
-		}
-		if (value.split(" ").length < 2) {
-			errorMessages.push("Name must have at least 2 words");
+		} else {
+			if (value.length < 3) {
+				errorMessages.push("Name must be at least 3 characters long");
+			}
+			if (value.length > 70) {
+				errorMessages.push("Name must be at most 70 characters long");
+			}
+			if (value.split(" ").length < 2) {
+				errorMessages.push("Name must have at least 2 words");
+			}
 		}
 		if (errorMessages.length > 0) {
 			const error = new InvalidNameError(`Invalid name: ${value}`);

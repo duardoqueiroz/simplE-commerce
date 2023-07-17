@@ -1,6 +1,6 @@
 import { Either, left, right } from "../../../helpers/Either";
-import InvalidPasswordError from "../../../presentation/errors/invalid-password-error";
 import bcrypt from "bcrypt";
+import InvalidPasswordError from "../../../presentation/errors/domain/invalid-password-error";
 
 export default class Password {
 	private static readonly saltRounds = 10;
@@ -13,15 +13,16 @@ export default class Password {
 		let errorMessages: string[] = [];
 		if (!plainText) {
 			errorMessages.push("Password is required");
-		}
-		if (
-			!plainText.match(
-				/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-			)
-		) {
-			errorMessages.push(
-				"Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character"
-			);
+		} else {
+			if (
+				!plainText.match(
+					/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+				)
+			) {
+				errorMessages.push(
+					"Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character"
+				);
+			}
 		}
 
 		if (errorMessages.length > 0) {

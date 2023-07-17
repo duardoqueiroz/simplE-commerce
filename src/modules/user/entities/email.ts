@@ -1,6 +1,6 @@
 import { Either, left, right } from "../../../helpers/Either";
-import { isEmail } from "../../../helpers/ValueObjectsHelper";
-import InvalidEmailError from "../../../presentation/errors/invalid-email-error";
+import { isEmail } from "../../../helpers/ObjectsHelper";
+import InvalidEmailError from "../../../presentation/errors/domain/invalid-email-error";
 
 export default class Email {
 	private constructor(private readonly _value: string) {}

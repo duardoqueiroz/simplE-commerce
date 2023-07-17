@@ -1,6 +1,6 @@
 import { Either, left, right } from "../../../helpers/Either";
-import { isCpf } from "../../../helpers/ValueObjectsHelper";
-import InvalidCpfError from "../../../presentation/errors/invalid-cpf-error";
+import { isCpf } from "../../../helpers/ObjectsHelper";
+import InvalidCpfError from "../../../presentation/errors/domain/invalid-cpf-error";
 
 export default class Cpf {
 	private constructor(private readonly _value: string) {}
@@ -9,10 +9,10 @@ export default class Cpf {
 		let errorMessages: string[] = [];
 		if (!value) {
 			errorMessages.push("CPF is required");
-		}
-		if (!isCpf(value)) {
+		} else if (!isCpf(value)) {
 			errorMessages.push("Invalid CPF");
 		}
+
 		if (errorMessages.length > 0) {
 			const error = new InvalidCpfError(`Invalid CPF: ${value}`);
 			error.messages = errorMessages;
