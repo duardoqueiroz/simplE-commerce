@@ -15,6 +15,7 @@ export default class FindAllUsersUseCase implements IFindAllUsersUseCase {
 					cpf: user.cpf,
 					email: user.email,
 					name: user.name,
+					is_admin: user.isAdmin,
 				};
 			})
 		);

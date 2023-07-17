@@ -1,5 +1,5 @@
 import { left, right } from "../../../../helpers/Either";
-import EmailAlreadyInUseError from "../../../../presentation/errors/email-already-in-use-error";
+import EmailAlreadyInUseError from "../../../../presentation/errors/application/email-already-in-use-error";
 import ErrorHandler from "../../../../services/error-handler";
 import { CreateUserUseCaseInput } from "../../dtos/sign-up-dtos/sign-up-request-dto";
 import { CreateUserUseCaseOutput } from "../../dtos/sign-up-dtos/sign-up-response-dto";
@@ -34,6 +34,7 @@ export default class CreateUserUseCase implements ICreateUserUseCase {
 			name: createdUser.name!,
 			email: createdUser.email!,
 			cpf: createdUser.cpf!,
+			is_admin: createdUser.isAdmin,
 		});
 	}
 }

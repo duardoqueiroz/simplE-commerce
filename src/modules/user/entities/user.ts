@@ -1,5 +1,5 @@
 import { Either, left, right } from "../../../helpers/Either";
-import DefaultError from "../../../presentation/errors/default-error";
+import DefaultDomainError from "../../../presentation/errors/domain/default-domain.error";
 import BaseEntity from "../../base-entity";
 import Cpf from "./cpf";
 import Email from "./email";
@@ -12,6 +12,7 @@ export default class User extends BaseEntity {
 		private readonly _email: Email,
 		private readonly _cpf: Cpf,
 		private readonly _password: Password,
+		private _isAdmin: boolean = false,
 		id?: string
 	) {
 		super(id);
@@ -23,7 +24,7 @@ export default class User extends BaseEntity {
 		cpf: string,
 		plainPassword: string,
 		id?: string
-	): Promise<Either<DefaultError, User>> {
+	): Promise<Either<DefaultDomainError, User>> {
 		const nameOrError = UserName.create(name);
 		const emailOrError = Email.create(email);
 		const cpfOrError = Cpf.create(cpf);
@@ -51,9 +52,18 @@ export default class User extends BaseEntity {
 				emailOrError.value as Email,
 				cpfOrError.value as Cpf,
 				passwordOrError.value as Password,
+				false,
 				id
 			)
 		);
+	}
+
+	public get isAdmin(): boolean {
+		return this._isAdmin;
+	}
+
+	public makeAdmin() {
+		this._isAdmin = true;
 	}
 
 	public get name(): string {
