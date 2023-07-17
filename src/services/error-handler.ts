@@ -1,11 +1,14 @@
-import { HttpResponse } from "../ports/http/http-response";
-import AuthenticationFailedError from "../presentation/errors/authentication-failed-error";
-import DefaultApplicationError from "../presentation/errors/default-application-error";
-import DefaultDomainError from "../presentation/errors/default-domain-error";
-import InvalidFieldsError from "../presentation/errors/invalid-fields-error";
-import ValidationError from "../presentation/errors/validation-error";
+import { HttpResponse } from "../contracts/http/http-response";
+import AuthenticationFailedError from "../presentation/errors/application/authentication-failed-error";
+import DefaultApplicationError from "../presentation/errors/application/default-application-error";
+import InvalidFieldsError from "../presentation/errors/application/invalid-fields-error";
+import ItemNotFoundError from "../presentation/errors/application/item-not-found-error";
+import UserNotFoundError from "../presentation/errors/application/user-not-found-error";
+import DefaultDomainError from "../presentation/errors/domain/default-domain.error";
+import ValidationError from "../presentation/errors/domain/validation-error";
 import BadRequestResponse from "../presentation/http-responses/bad-request-response";
 import InternalServerErrorResponse from "../presentation/http-responses/internal-server-error-response";
+import NotFoundResponse from "../presentation/http-responses/not-found-response";
 
 export default class ErrorHandler {
 	public static mapDomainErrorToUseCaseError(
@@ -32,6 +35,12 @@ export default class ErrorHandler {
 			error instanceof AuthenticationFailedError
 		) {
 			return new BadRequestResponse(error);
+		}
+		if (
+			error instanceof UserNotFoundError ||
+			error instanceof ItemNotFoundError
+		) {
+			return new NotFoundResponse(error);
 		}
 		return new InternalServerErrorResponse(error);
 	}
