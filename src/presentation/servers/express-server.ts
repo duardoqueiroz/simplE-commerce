@@ -1,6 +1,7 @@
 import express, { Application, Response, Request } from "express";
-import HttpHandler from "../../ports/http/http-handler";
-import HttpServer from "../../ports/http/http-server";
+import HttpHandler from "../../contracts/http/http-handler";
+import HttpServer from "../../contracts/http/http-server";
+import HttpMiddleware from "../../contracts/http/http-middleware";
 
 export default class ExpressServer implements HttpServer {
 	private app: Application;
@@ -12,20 +13,41 @@ export default class ExpressServer implements HttpServer {
 	}
 
 	public async register(
-		method: "get" | "post",
+		method: "get" | "post" | "put" | "delete",
 		path: string,
-		handler: HttpHandler
+		handler: HttpHandler,
+		...middlewares: HttpMiddleware[]
 	): Promise<void> {
-		this.app[method](path, async (req: Request, res: Response) => {
-			const request = {
-				body: req.body,
-				params: req.params,
-				query: req.query,
-				headers: req.headers,
+		const middlewareFunctions = middlewares.map((middleware) => {
+			return async (req: Request, res: Response, next: Function) => {
+				const httpResponse = await middleware.handle({
+					body: req.body,
+					params: req.params,
+					query: req.query,
+					headers: req.headers,
+					method: req.method,
+				});
+				if (httpResponse) {
+					return res.status(httpResponse.statusCode).json(httpResponse.body);
+				}
+				next();
 			};
-			const httpResponse = await handler.handle(request);
-			return res.status(httpResponse.statusCode).json(httpResponse.body);
 		});
+
+		this.app[method](
+			path,
+			...middlewareFunctions,
+			async (req: Request, res: Response) => {
+				const request = {
+					body: req.body,
+					params: req.params,
+					query: req.query,
+					headers: req.headers,
+				};
+				const httpResponse = await handler.handle(request);
+				return res.status(httpResponse.statusCode).json(httpResponse.body);
+			}
+		);
 	}
 
 	public async start(port: number): Promise<void> {
