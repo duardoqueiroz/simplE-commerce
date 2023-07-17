@@ -1,16 +1,16 @@
 import jsonwebtoken from "jsonwebtoken";
 
 export default class TokenGenerator {
-	constructor(private readonly secretKey: string) {}
+	constructor(
+		private readonly secretKey: string,
+		private readonly expiresIn: number
+	) {}
 
-	public generate(
-		value: { [key: string]: string },
-		expiresIn: number,
-		issueDate: Date
-	) {
+	public generate(value: { [key: string]: string }) {
+		const expiresIn = this.expiresIn;
 		return {
 			value: jsonwebtoken.sign(
-				{ value, iat: issueDate.getTime(), expiresIn },
+				{ value, iat: new Date().getTime(), expiresIn },
 				this.secretKey
 			),
 			expires_in: expiresIn,
