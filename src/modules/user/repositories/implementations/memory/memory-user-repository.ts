@@ -8,6 +8,11 @@ export default class MemoryUserRepository implements IUserRepository {
 		this.users = [];
 	}
 
+	public async delete(id: string): Promise<void> {
+		const userIndex = this.users.findIndex((user) => user.id === id);
+		this.users.splice(userIndex, 1);
+	}
+
 	public async findByEmail(email: string): Promise<User | undefined> {
 		const user = this.users.find((user) => user.email === email);
 		return user;
