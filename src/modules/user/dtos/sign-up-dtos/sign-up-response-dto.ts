@@ -1,11 +1,12 @@
 import { Either } from "../../../../helpers/Either";
-import DefaultError from "../../../../presentation/errors/default-error";
+import DefaultApplicationError from "../../../../presentation/errors/application/default-application-error";
 
 type UserData = {
 	id: string;
 	name: string;
 	email: string;
 	cpf: string;
+	is_admin: boolean;
 };
 
-export type CreateUserUseCaseOutput = Either<DefaultError, UserData>;
+export type CreateUserUseCaseOutput = Either<DefaultApplicationError, UserData>;
