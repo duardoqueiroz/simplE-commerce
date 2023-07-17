@@ -1,5 +1,5 @@
 import { Either } from "../../../../helpers/Either";
-import DefaultApplicationError from "../../../../presentation/errors/default-application-error";
+import DefaultApplicationError from "../../../../presentation/errors/application/default-application-error";
 
 type SignInData = {
 	id: string;

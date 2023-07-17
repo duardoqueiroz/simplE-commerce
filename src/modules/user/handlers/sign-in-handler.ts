@@ -1,6 +1,6 @@
-import HttpHandler from "../../../ports/http/http-handler";
-import { HttpRequest } from "../../../ports/http/http-request";
-import { HttpResponse } from "../../../ports/http/http-response";
+import HttpHandler from "../../../contracts/http/http-handler";
+import { HttpRequest } from "../../../contracts/http/http-request";
+import { HttpResponse } from "../../../contracts/http/http-response";
 import { SuccessResponse } from "../../../presentation/http-responses/success-response";
 import ErrorHandler from "../../../services/error-handler";
 import ISignInUseCase from "../use-cases/contracts/sign-in-use-case";
