@@ -1,6 +1,6 @@
-import DefaultError from "./default-error";
+import DefaultApplicationError from "./default-application-error";
 
-export default class UserNotFoundError extends DefaultError {
+export default class UserNotFoundError extends DefaultApplicationError {
 	public messages: string[] = [];
 
 	constructor() {

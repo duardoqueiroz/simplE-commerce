@@ -1,4 +1,4 @@
-import DefaultError from "./default-error";
+import DefaultApplicationError from "./default-application-error";
 
 interface FieldError {
 	field?: string;
@@ -7,7 +7,7 @@ interface FieldError {
 	messages?: string[];
 }
 
-export default class InvalidFieldsError extends DefaultError {
+export default class InvalidFieldsError extends DefaultApplicationError {
 	public messages: string[] = [];
 
 	constructor(message: string, readonly field_error: FieldError) {

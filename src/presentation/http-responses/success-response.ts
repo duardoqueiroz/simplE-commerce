@@ -1,4 +1,4 @@
-import { HttpResponse } from "../../ports/http/http-response";
+import { HttpResponse } from "../../contracts/http/http-response";
 
 export class SuccessResponse<T> implements HttpResponse<T> {
 	statusCode = 200;

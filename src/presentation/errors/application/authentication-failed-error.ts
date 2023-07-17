@@ -1,6 +1,6 @@
-import DefaultError from "./default-error";
+import DefaultApplicationError from "./default-application-error";
 
-export default class AuthenticationFailedError extends DefaultError {
+export default class AuthenticationFailedError extends DefaultApplicationError {
 	public messages: string[] = [];
 
 	constructor() {

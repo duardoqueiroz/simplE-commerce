@@ -1,10 +1,12 @@
-import HttpHandler from "../http-handlers/http-handler";
+import HttpHandler from "./http-handler";
+import HttpMiddleware from "./http-middleware";
 
 export default interface HttpServer {
 	register(
 		method: "get" | "post",
 		path: string,
-		handler: HttpHandler
+		handler: HttpHandler,
+		...middlewares: HttpMiddleware[]
 	): Promise<void>;
 	start(port: number): Promise<void>;
 }
