@@ -4,18 +4,7 @@ import IItemRepository from "../../contracts/item-repository";
 export default class MemoryItemRepository implements IItemRepository {
 	private items: Item[] = [];
 
-	public async save(item: Item): Promise<Item> {
-		// check if item already exists, if so, update it
-		const foundItem = await this.findById(item.id);
-		if (foundItem) {
-			this.items = this.items.map((item) => {
-				if (item.id === foundItem.id) {
-					item = foundItem;
-				}
-				return item;
-			});
-			return foundItem;
-		}
+	public async create(item: Item): Promise<Item> {
 		this.items.push(item);
 		return item;
 	}
@@ -29,7 +18,13 @@ export default class MemoryItemRepository implements IItemRepository {
 	}
 
 	public async update(item: Item): Promise<Item | undefined> {
-		throw new Error("Method not implemented.");
+		this.items = this.items.map((itemInMemory) => {
+			if (itemInMemory.id === item.id) {
+				return item;
+			}
+			return itemInMemory;
+		});
+		return item;
 	}
 
 	public async delete(id: string): Promise<void> {

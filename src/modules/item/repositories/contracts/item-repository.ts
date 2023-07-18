@@ -1,7 +1,7 @@
 import Item from "../../entities/item";
 
 export default interface IItemRepository {
-	save(item: Item): Promise<Item>;
+	create(item: Item): Promise<Item>;
 	findById(id: string): Promise<Item | undefined>;
 	findAll(): Promise<Item[]>;
 	update(item: Item): Promise<Item | undefined>;

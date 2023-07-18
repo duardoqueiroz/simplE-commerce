@@ -32,7 +32,7 @@ export default class CreateItemUseCase implements ICreateItemUseCase {
 			return left(ErrorHandler.mapDomainErrorToUseCaseError(itemEntity.value));
 		}
 
-		const item = await this.itemRepository.save(itemEntity.value as Item);
+		const item = await this.itemRepository.create(itemEntity.value as Item);
 
 		return right({
 			id: item.id,
