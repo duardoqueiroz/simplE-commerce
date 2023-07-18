@@ -12,6 +12,7 @@ export default class FindUserUseCase {
 	public async execute(value: string): Promise<FindUserUseCaseOutput> {
 		let user: User | undefined;
 		if (isCPF(value)) {
+			value = value.replace(/\D/g, "");
 			user = await this.userRepository.findByCpf(value);
 		} else if (isEmail(value)) {
 			user = await this.userRepository.findByEmail(value);
