@@ -58,6 +58,24 @@ export default class User extends BaseEntity {
 		);
 	}
 
+	public static buildExisting(
+		name: string,
+		email: string,
+		cpf: string,
+		passwordHash: string,
+		isAdmin: boolean,
+		id: string
+	): User {
+		return new User(
+			UserName.buildExisting(name),
+			Email.buildExisting(email),
+			Cpf.buildExisting(cpf),
+			Password.buildExisting(passwordHash),
+			isAdmin,
+			id
+		);
+	}
+
 	public get isAdmin(): boolean {
 		return this._isAdmin;
 	}

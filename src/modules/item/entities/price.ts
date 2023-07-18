@@ -20,6 +20,10 @@ export default class Price {
 		return right(new Price(value));
 	}
 
+	public static buildExisting(value: number): Price {
+		return new Price(value);
+	}
+
 	public get value(): number {
 		return this._value;
 	}

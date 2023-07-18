@@ -30,6 +30,10 @@ export default class Description {
 		return right(new Description(value));
 	}
 
+	public static buildExisting(value: string): Description {
+		return new Description(value);
+	}
+
 	public get value(): string {
 		return this._value;
 	}

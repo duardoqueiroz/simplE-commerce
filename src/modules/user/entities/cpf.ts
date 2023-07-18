@@ -23,6 +23,10 @@ export default class Cpf {
 		return right(new Cpf(value));
 	}
 
+	public static buildExisting(value: string): Cpf {
+		return new Cpf(value);
+	}
+
 	get value(): string {
 		return this._value;
 	}

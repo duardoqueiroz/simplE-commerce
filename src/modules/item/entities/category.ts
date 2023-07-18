@@ -27,6 +27,10 @@ export default class Category {
 		return right(new Category(value));
 	}
 
+	public static buildExisting(value: string): Category {
+		return new Category(value);
+	}
+
 	public get value(): string {
 		return this._value;
 	}

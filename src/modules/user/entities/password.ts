@@ -44,6 +44,10 @@ export default class Password {
 		return bcrypt.hash(plainText, this.saltRounds);
 	}
 
+	public static buildExisting(hash: string): Password {
+		return new Password(hash);
+	}
+
 	public get value(): string {
 		return this.hash;
 	}

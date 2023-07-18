@@ -14,6 +14,10 @@ export default class Email {
 		return right(new Email(value));
 	}
 
+	public static buildExisting(value: string): Email {
+		return new Email(value);
+	}
+
 	public get value(): string {
 		return this._value;
 	}

@@ -27,6 +27,10 @@ export default class UserName {
 		return right(new UserName(value));
 	}
 
+	public static buildExisting(value: string): UserName {
+		return new UserName(value);
+	}
+
 	public get value(): string {
 		return this._value;
 	}

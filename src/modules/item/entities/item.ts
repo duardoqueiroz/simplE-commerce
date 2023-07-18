@@ -7,6 +7,7 @@ import Price from "./price";
 import { Either, left, right } from "../../../helpers/Either";
 import DefaultDomainError from "../../../presentation/errors/domain/default-domain.error";
 import Category from "./category";
+import Status from "./status";
 
 export default class Item extends BaseEntity {
 	private constructor(
@@ -15,7 +16,7 @@ export default class Item extends BaseEntity {
 		private _description: Description,
 		private _price: Price,
 		private _category: Category,
-		private _status: ITEM_STATUS,
+		private _status: Status,
 		id?: string
 	) {
 		super(id);
@@ -33,6 +34,7 @@ export default class Item extends BaseEntity {
 		const descriptionOrError = Description.create(description);
 		const priceOrError = Price.create(price);
 		const categoryOrError = Category.create(category);
+		const statusOrError = Status.create(ITEM_STATUS.PENDING);
 
 		if (nameOrError.isLeft()) {
 			return left(nameOrError.value);
@@ -50,6 +52,10 @@ export default class Item extends BaseEntity {
 			return left(categoryOrError.value);
 		}
 
+		if (statusOrError.isLeft()) {
+			return left(statusOrError.value);
+		}
+
 		return right(
 			new Item(
 				userId,
@@ -57,9 +63,29 @@ export default class Item extends BaseEntity {
 				descriptionOrError.value as Description,
 				priceOrError.value as Price,
 				categoryOrError.value as Category,
-				ITEM_STATUS.PENDING,
+				statusOrError.value as Status,
 				id
 			)
+		);
+	}
+
+	public static buildExisting(
+		id: string,
+		userId: string,
+		name: string,
+		description: string,
+		price: number,
+		category: string,
+		status: string
+	): Item {
+		return new Item(
+			userId,
+			Name.buildExisting(name),
+			Description.buildExisting(description),
+			Price.buildExisting(price),
+			Category.buildExisting(category),
+			Status.buildExisting(status),
+			id
 		);
 	}
 
@@ -83,19 +109,19 @@ export default class Item extends BaseEntity {
 		return this._category.value;
 	}
 
-	public get status(): ITEM_STATUS {
-		return this._status;
+	public get status(): string {
+		return this._status.value;
 	}
 
 	public makeItemActive(): void {
-		this._status = ITEM_STATUS.ACTIVE;
+		this._status = Status.create(ITEM_STATUS.ACTIVE).value as Status;
 	}
 
 	public makeItemInactive(): void {
-		this._status = ITEM_STATUS.INACTIVE;
+		this._status = Status.create(ITEM_STATUS.INACTIVE).value as Status;
 	}
 
 	public makeItemPending(): void {
-		this._status = ITEM_STATUS.PENDING;
+		this._status = Status.create(ITEM_STATUS.PENDING).value as Status;
 	}
 }

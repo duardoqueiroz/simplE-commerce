@@ -25,6 +25,10 @@ export default class Name {
 		return right(new Name(value));
 	}
 
+	public static buildExisting(value: string): Name {
+		return new Name(value);
+	}
+
 	public get value(): string {
 		return this._value;
 	}
