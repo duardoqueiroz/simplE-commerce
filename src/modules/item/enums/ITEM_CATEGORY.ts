@@ -1,5 +1,4 @@
 export enum ITEM_CATEGORY {
-	// create a enum with the categories of products
 	FOOD = "FOOD",
 	DRINK = "DRINK",
 	ELETRONICS = "ELETRONICS",
@@ -8,4 +7,7 @@ export enum ITEM_CATEGORY {
 	BOOKS = "BOOKS",
 	SPORTS = "SPORTS",
 	BEAUTY = "BEAUTY",
+	HEALTH = "HEALTH",
+	TOYS = "TOYS",
+	OTHERS = "OTHERS",
 }
