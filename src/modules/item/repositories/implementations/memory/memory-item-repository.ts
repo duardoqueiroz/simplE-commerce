@@ -30,22 +30,4 @@ export default class MemoryItemRepository implements IItemRepository {
 	public async delete(id: string): Promise<void> {
 		this.items = this.items.filter((item) => item.id !== id);
 	}
-
-	public async active(id: string): Promise<void> {
-		this.items = this.items.map((item) => {
-			if (item.id === id) {
-				item.makeItemActive();
-			}
-			return item;
-		});
-	}
-
-	public async inactive(id: string): Promise<void> {
-		this.items = this.items.map((item) => {
-			if (item.id === id) {
-				item.makeItemInactive();
-			}
-			return item;
-		});
-	}
 }
