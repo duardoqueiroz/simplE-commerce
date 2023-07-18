@@ -6,6 +6,4 @@ export default interface IItemRepository {
 	findAll(): Promise<Item[]>;
 	update(item: Item): Promise<Item | undefined>;
 	delete(id: string): Promise<void>;
-	active(id: string): Promise<void>;
-	inactive(id: string): Promise<void>;
 }
