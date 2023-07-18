@@ -1,4 +1,5 @@
 import { left, right } from "../../../../helpers/Either";
+import CpfAlreadyInUseError from "../../../../presentation/errors/application/cpf-already-in-use-error";
 import EmailAlreadyInUseError from "../../../../presentation/errors/application/email-already-in-use-error";
 import ErrorHandler from "../../../../services/error-handler";
 import { CreateUserUseCaseInput } from "../../dtos/sign-up-dtos/sign-up-request-dto";
@@ -13,9 +14,13 @@ export default class CreateUserUseCase implements ICreateUserUseCase {
 	public async execute(
 		input: CreateUserUseCaseInput
 	): Promise<CreateUserUseCaseOutput> {
-		const userExists = await this.userRepository.findByEmail(input.email);
+		let userExists = await this.userRepository.findByEmail(input.email);
 		if (userExists) {
 			return left(new EmailAlreadyInUseError());
+		}
+		userExists = await this.userRepository.findByCpf(input.cpf);
+		if (userExists) {
+			return left(new CpfAlreadyInUseError());
 		}
 		const userOrError = await User.create(
 			input.name,
