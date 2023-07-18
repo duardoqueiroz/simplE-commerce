@@ -1,9 +1,10 @@
+import { config } from "./config";
+import dbFactory from "./factories/database/db-factory";
 import ActiveItemHandler from "./modules/item/handlers/active-item-handler";
 import CreateItemHandler from "./modules/item/handlers/create-item-handler";
 import DeleteItemHandler from "./modules/item/handlers/delete-item-handler";
 import FindAllItemsHandler from "./modules/item/handlers/find-all-items-handler";
 import FindItemHandler from "./modules/item/handlers/find-item-handler";
-import MemoryItemRepository from "./modules/item/repositories/implementations/memory/memory-item-repository";
 import ActiveItemUseCase from "./modules/item/use-cases/implementations/active-item-use-case";
 import CreateItemUseCase from "./modules/item/use-cases/implementations/create-item-use-case";
 import DeleteItemUseCase from "./modules/item/use-cases/implementations/delete-item-use-case";
@@ -14,7 +15,6 @@ import FindAllUsersHandler from "./modules/user/handlers/find-all-users";
 import FindUserHandler from "./modules/user/handlers/find-user";
 import SignInHandler from "./modules/user/handlers/sign-in-handler";
 import SignUpHandler from "./modules/user/handlers/sign-up-handler";
-import MemoryUserRepository from "./modules/user/repositories/implementations/memory/memory-user-repository";
 import CreateUserUseCase from "./modules/user/use-cases/implementations/create-user-use-case";
 import DeleteUserUseCase from "./modules/user/use-cases/implementations/delete-user-use-case";
 import FindAllUsersUseCase from "./modules/user/use-cases/implementations/find-all-users-use-case";
@@ -25,22 +25,22 @@ import IsAuthenticatedMiddleware from "./presentation/middlewares/is-authenticat
 import LoggedUserIsTargetUserMiddleware from "./presentation/middlewares/logged-user-is-target-user";
 import LoggedUserIsTargetUserItemMiddleware from "./presentation/middlewares/logged-user-is-target-user-item";
 import ExpressServer from "./presentation/servers/express-server";
+import PrismaService from "./services/prisma-service";
 import TokenGenerator from "./services/token-generator";
 
+const { env } = config();
+
 const server = new ExpressServer();
-const tokenGenerator = new TokenGenerator(
-	process.env.JWT_SECRET!,
-	+process.env.JWT_EXPIRES_IN!
-);
-const userRepositoy = new MemoryUserRepository();
-const itemRepository = new MemoryItemRepository();
+const tokenGenerator = new TokenGenerator(env.jwt_secret, env.jwt_expires_in);
+const prismaService = new PrismaService();
+const { itemRepository, userRepository } = dbFactory.postgres(prismaService);
 // -------------- USE CASES --------------
-const createUserUseCase = new CreateUserUseCase(userRepositoy);
-const signUpUseCase = new SignInUseCase(userRepositoy, tokenGenerator);
-const findAllUsersUseCase = new FindAllUsersUseCase(userRepositoy);
-const findUserUseCase = new FindUserUseCase(userRepositoy);
-const deleteUserUseCase = new DeleteUserUseCase(userRepositoy);
-const createItemUseCase = new CreateItemUseCase(itemRepository, userRepositoy);
+const createUserUseCase = new CreateUserUseCase(userRepository);
+const signUpUseCase = new SignInUseCase(userRepository, tokenGenerator);
+const findAllUsersUseCase = new FindAllUsersUseCase(userRepository);
+const findUserUseCase = new FindUserUseCase(userRepository);
+const deleteUserUseCase = new DeleteUserUseCase(userRepository);
+const createItemUseCase = new CreateItemUseCase(itemRepository, userRepository);
 const findAllItemsUseCase = new FindAllItemsUseCase(itemRepository);
 const findItemUseCase = new FindItemUseCase(itemRepository);
 const deleteItemUseCase = new DeleteItemUseCase(itemRepository);
@@ -59,12 +59,12 @@ const activeItemHandler = new ActiveItemHandler(activeItemUseCase);
 // -------------- MIDDLEWARES --------------
 const isAuthenticatedMiddleware = new IsAuthenticatedMiddleware(
 	tokenGenerator,
-	userRepositoy
+	userRepository
 );
 const loggedUserIsTargetUserMiddleware = new LoggedUserIsTargetUserMiddleware();
 const loggedUserIsTargetUserItemMiddleware =
 	new LoggedUserIsTargetUserItemMiddleware(itemRepository);
-const isAdminMiddleware = new IsAdminMiddleware(userRepositoy);
+const isAdminMiddleware = new IsAdminMiddleware(userRepository);
 // -------------- ROUTES --------------
 server.register("post", "/sign-up", signUpHandler);
 server.register("post", "/sign-in", signInHandler);
@@ -102,7 +102,14 @@ server.register(
 
 // -------------- MAIN --------------
 async function main() {
-	await server.start(3000);
+	await server.start(env.port);
 }
 
-main();
+main()
+	.then(async () => {
+		await prismaService.connect();
+	})
+	.catch(async (err) => {
+		console.error(err);
+		await prismaService.disconnect();
+	});
