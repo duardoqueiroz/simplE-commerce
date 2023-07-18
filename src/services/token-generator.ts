@@ -3,7 +3,7 @@ import jsonwebtoken from "jsonwebtoken";
 export default class TokenGenerator {
 	constructor(
 		private readonly secretKey: string,
-		private readonly expiresIn: number
+		private readonly expiresIn: string
 	) {}
 
 	public generate(value: { [key: string]: string }) {
