@@ -13,7 +13,10 @@ export default class ActiveItemUseCase implements IActiveItemUseCase {
 			return left(new ItemNotFoundError());
 		}
 		foundItem.makeItemActive();
-		const item = await this.itemRepository.save(foundItem);
+		const item = await this.itemRepository.update(foundItem);
+		if (!item) {
+			return left(new ItemNotFoundError());
+		}
 		return right({
 			id: item.id,
 			userId: item.userId,
