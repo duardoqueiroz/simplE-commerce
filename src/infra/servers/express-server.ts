@@ -1,7 +1,7 @@
 import express, { Application, Response, Request } from "express";
-import HttpHandler from "../../../application/contracts/http/http-handler";
-import HttpMiddleware from "../../../application/contracts/http/http-middleware";
-import HttpServer from "../../../application/contracts/http/http-server";
+import HttpHandler from "../../application/contracts/http/http-handler";
+import HttpMiddleware from "../../application/contracts/http/http-middleware";
+import HttpServer from "../../application/contracts/http/http-server";
 
 export default class ExpressServer implements HttpServer {
 	private app: Application;

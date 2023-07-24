@@ -26,20 +26,20 @@ import IsAdminMiddleware from "../infra/middlewares/is-admin-middleware";
 import IsAuthenticatedMiddleware from "../infra/middlewares/is-authenticated-middleware";
 import LoggedUserIsTargetUserMiddleware from "../infra/middlewares/logged-user-is-target-user";
 import LoggedUserIsTargetUserItemMiddleware from "../infra/middlewares/logged-user-is-target-user-item";
-import KafkaService from "../infra/queue/kafka-service";
 import Env from "./config";
 import dbFactory from "./factories/database/db-factory";
-import ExpressServer from "./factories/servers/express-server";
+import serversFactory from "./factories/servers/servers-factory";
+import queueFactory from "./factories/queue/queue-factory";
 
 Env.initialize();
 
-const queue = new KafkaService(Env.get<string>("KAFKA_BROKER_ADDRESS"));
-const server = new ExpressServer();
 const tokenGenerator = new TokenGenerator(
 	Env.get<string>("JWT_SECRET"),
 	Env.get<string>("JWT_EXPIRES_IN")
 );
 const prismaService = new PrismaService();
+const queue = queueFactory.kafka(Env.get<string>("KAFKA_BROKER_ADDRESS"));
+const server = serversFactory.express();
 const { itemRepository, userRepository, orderRepository } =
 	dbFactory.postgres(prismaService);
 // -------------- USE CASES --------------
