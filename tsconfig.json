@@ -11,5 +11,12 @@
 		"target": "es2017"
 	},
 	"compileOnSave": true,
-	"include": ["src", "@types", "src/**/*.json"]
+	"include": [
+		"src",
+		"@types",
+		"src/**/*.json",
+		"src2/application/errors/application",
+		"src2/application/contracts/database",
+		"src2/@types/enums"
+	]
 }
