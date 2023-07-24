@@ -11,24 +11,51 @@ datasource db {
 }
 
 model users {
-  id       String  @id @default(uuid())
-  name     String  @db.VarChar(100)
-  email    String  @unique
+  id       String   @id @default(uuid())
+  name     String   @db.VarChar(100)
+  email    String   @unique
   password String
-  cpf      String  @unique
-  is_admin Boolean @default(false)
+  cpf      String   @unique
+  is_admin Boolean  @default(false)
   items    items[]
+  order    orders[]
 }
 
 model items {
   id          String        @id @default(uuid())
   user_id     String
-  user        users         @relation(fields: [user_id], references: [id])
+  user        users         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   name        String        @db.VarChar(100)
   description String        @db.VarChar(100)
   category    item_category
   status      item_status
   price       Float
+  order_items order_items[]
+}
+
+model orders {
+  id                 String        @id @default(uuid())
+  user_id            String
+  user               users         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  total_amount       Float
+  order_items        order_items[]
+  status             order_status
+  card_number        String
+  card_name          String
+  card_cvv           String
+  card_expires       String
+  card_encryption_iv String
+  created_at         DateTime      @default(now())
+}
+
+model order_items {
+  id         String @id @default(uuid())
+  order_id   String
+  order      orders @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  item_id    String
+  item       items  @relation(fields: [item_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  quantity   Int
+  unit_price Float
 }
 
 enum item_category {
@@ -49,4 +76,11 @@ enum item_status {
   ACTIVE
   INACTIVE
   PENDING
+}
+
+enum order_status {
+  PENDING
+  CONFIRMED
+  CANCELED
+  REFUSED
 }
