@@ -1,5 +1,5 @@
 export type CreateOrderRequestDto = {
-	userId: string;
+	user_id: string;
 	items: {
 		item_id: string;
 		quantity: number;

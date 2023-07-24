@@ -9,4 +9,7 @@ type UserData = {
 	is_admin: boolean;
 };
 
-export type CreateUserUseCaseOutput = Either<DefaultApplicationError, UserData>;
+export type CreateUserUseCaseResponse = Either<
+	DefaultApplicationError,
+	UserData
+>;

@@ -3,13 +3,13 @@ import { left, right } from "../../../common/helpers/Either";
 import { isEmail } from "../../../common/helpers/ObjectsHelper";
 import User from "../../../domain/entities/user/user";
 import IUserRepository from "../../../domain/repositories/user-repository";
-import { FindUserUseCaseOutput } from "../../dtos/user/find-user-dto/find-user-response-dto";
+import { FindUserUseCaseResponse } from "../../dtos/user/find-user-dto/find-user-response-dto";
 import UserNotFoundError from "../../errors/application/user-not-found-error";
 
 export default class FindUserUseCase {
 	constructor(readonly userRepository: IUserRepository) {}
 
-	public async execute(value: string): Promise<FindUserUseCaseOutput> {
+	public async execute(value: string): Promise<FindUserUseCaseResponse> {
 		let user: User | undefined;
 		if (isCPF(value)) {
 			value = value.replace(/\D/g, "");

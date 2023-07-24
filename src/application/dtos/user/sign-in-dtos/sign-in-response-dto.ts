@@ -12,4 +12,4 @@ type SignInData = {
 	};
 };
 
-export type SignInUseCaseOutput = Either<DefaultApplicationError, SignInData>;
+export type SignInUseCaseResponse = Either<DefaultApplicationError, SignInData>;

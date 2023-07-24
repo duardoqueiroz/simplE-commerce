@@ -1,5 +1,5 @@
-import { FindUserUseCaseOutput } from "../../../application/dtos/user/find-user-dto/find-user-response-dto";
+import { FindUserUseCaseResponse } from "../../../application/dtos/user/find-user-dto/find-user-response-dto";
 
 export default interface IFindUserUseCase {
-	execute(value: string): Promise<FindUserUseCaseOutput>;
+	execute(value: string): Promise<FindUserUseCaseResponse>;
 }

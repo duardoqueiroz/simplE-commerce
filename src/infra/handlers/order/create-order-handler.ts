@@ -11,17 +11,19 @@ export default class CreateOrderHandler implements HttpHandler {
 	constructor(private readonly createOrderUseCase: ICreateOrderUseCase) {}
 
 	public async handle(
-		request: HttpRequest<CreateOrderRequestDto, any, any, any, any>
+		request: HttpRequest<CreateOrderRequestDto>
 	): Promise<HttpResponse<unknown>> {
-		const body = request.body;
-		if (!body) {
+		if (!request || !request.body) {
 			return new BadRequestResponse("Body is required");
 		}
-		const { items, card } = body;
+		if (!request.headers || !request.headers.user_id) {
+			return new BadRequestResponse("Headers with user_id is required");
+		}
+		const { items, card } = request.body;
 		const userId = request.headers.user_id;
 
 		const result = await this.createOrderUseCase.execute({
-			userId,
+			user_id: userId,
 			items,
 			card,
 		});

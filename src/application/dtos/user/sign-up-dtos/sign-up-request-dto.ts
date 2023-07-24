@@ -1,4 +1,4 @@
-export type CreateUserUseCaseInput = {
+export type CreateUserRequestDto = {
 	name: string;
 	email: string;
 	cpf: string;

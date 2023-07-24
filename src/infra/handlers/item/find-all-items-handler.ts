@@ -8,9 +8,7 @@ import { SuccessResponse } from "../../responses/success-response";
 export default class FindAllItemsHandler implements HttpHandler {
 	constructor(private readonly findAllItemsUseCase: IFindAllItemsUseCase) {}
 
-	public async handle(
-		request: HttpRequest<any, any, any, any, any>
-	): Promise<HttpResponse<unknown>> {
+	public async handle(request: HttpRequest): Promise<HttpResponse<unknown>> {
 		const findAllItemsResponse = await this.findAllItemsUseCase.execute();
 		if (findAllItemsResponse.isLeft()) {
 			return ErrorHandler.mapUseCaseErrorToHttpResponse(

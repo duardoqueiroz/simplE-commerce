@@ -11,4 +11,4 @@ type ItemData = {
 	status: string;
 };
 
-export type CreateItemOutputDto = Either<DefaultApplicationError, ItemData>;
+export type CreateItemResponseDto = Either<DefaultApplicationError, ItemData>;

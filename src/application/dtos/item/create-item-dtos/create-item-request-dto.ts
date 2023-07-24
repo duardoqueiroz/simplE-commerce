@@ -1,5 +1,5 @@
-export type CreateItemInputDto = {
-	userId: string;
+export type CreateItemRequestDto = {
+	user_id: string;
 	name: string;
 	description: string;
 	price: number;

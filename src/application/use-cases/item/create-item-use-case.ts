@@ -4,8 +4,8 @@ import Item from "../../../domain/entities/item/item";
 import IItemRepository from "../../../domain/repositories/item-repository";
 import IUserRepository from "../../../domain/repositories/user-repository";
 import ICreateItemUseCase from "../../../domain/use-cases/item/create-item-use-case";
-import { CreateItemInputDto } from "../../dtos/item/create-item-dtos/create-item-input-dto";
-import { CreateItemOutputDto } from "../../dtos/item/create-item-dtos/create-item-output-dto";
+import { CreateItemRequestDto } from "../../dtos/item/create-item-dtos/create-item-input-dto";
+import { CreateItemResponseDto } from "../../dtos/item/create-item-dtos/create-item-output-dto";
 import UserNotFoundError from "../../errors/application/user-not-found-error";
 
 export default class CreateItemUseCase implements ICreateItemUseCase {
@@ -14,7 +14,9 @@ export default class CreateItemUseCase implements ICreateItemUseCase {
 		private readonly userRepository: IUserRepository
 	) {}
 
-	public async execute(data: CreateItemInputDto): Promise<CreateItemOutputDto> {
+	public async execute(
+		data: CreateItemRequestDto
+	): Promise<CreateItemResponseDto> {
 		const user = await this.userRepository.findById(data.userId);
 		if (!user) {
 			return left(new UserNotFoundError());
