@@ -19,13 +19,13 @@ export default class CreateOrderHandler implements HttpHandler {
 		if (!request.headers || !request.headers.user_id) {
 			return new BadRequestResponse("Headers with user_id is required");
 		}
-		const { items, card } = request.body;
+		const { items, credit_card_token } = request.body;
 		const userId = request.headers.user_id;
 
 		const result = await this.createOrderUseCase.execute({
 			user_id: userId,
 			items,
-			card,
+			credit_card_token,
 		});
 
 		if (result.isLeft()) {

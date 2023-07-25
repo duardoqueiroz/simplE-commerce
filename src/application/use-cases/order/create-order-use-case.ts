@@ -3,6 +3,7 @@ import { left, right } from "../../../common/helpers/Either";
 import ErrorHandler from "../../../common/services/error-handler";
 import Order from "../../../domain/entities/order/order";
 import { OrderItem } from "../../../domain/entities/order/order-items";
+import OrderReservedEvent from "../../../domain/events/order-reserved-event";
 import IItemRepository from "../../../domain/repositories/item-repository";
 import IOrderRepository from "../../../domain/repositories/order-repository";
 import IUserRepository from "../../../domain/repositories/user-repository";
@@ -24,7 +25,7 @@ export default class CreateOrderUseCase implements ICreateOrderUseCase {
 	public async execute(
 		input: CreateOrderRequestDto
 	): Promise<CreateOrderResponseDto> {
-		const { user_id, items, card } = input;
+		const { user_id, items, credit_card_token } = input;
 		const user = await this.userRepository.findById(user_id);
 		if (!user) {
 			return left(new UserNotFoundError());
@@ -51,13 +52,7 @@ export default class CreateOrderUseCase implements ICreateOrderUseCase {
 			user_id,
 			orderItems,
 			totalPrice,
-			ORDER_STATUS.PENDING,
-			{
-				cvv: card.cvv,
-				expirationDate: card.expiration_date,
-				name: card.name,
-				number: card.number,
-			}
+			ORDER_STATUS.PENDING
 		);
 		if (orderOrError.isLeft()) {
 			return left(
@@ -66,24 +61,19 @@ export default class CreateOrderUseCase implements ICreateOrderUseCase {
 		}
 
 		const order = await this.orderRepository.create(orderOrError.value);
-		const orderData = {
+		const orderReservedEvent = new OrderReservedEvent(
+			order.id,
+			order.userId,
+			order.totalPrice,
+			credit_card_token
+		);
+		await this.queueService.emit("ORDER_RESERVED", orderReservedEvent);
+		return right({
 			id: order.id,
 			user_id: order.userId,
 			items: order.items,
 			price: order.totalPrice,
 			status: order.status,
-		};
-		const cardData = {
-			number: order.card.number,
-			cvv: order.card.cvv,
-			expiration_date: order.card.expirationDate,
-			name: order.card.name,
-			iv: order.card.iv,
-		};
-		await this.queueService.emit(
-			"ORDER_CREATED",
-			JSON.stringify({ ...orderData, card: cardData })
-		);
-		return right(orderData);
+		});
 	}
 }

@@ -1,7 +1,6 @@
 import DefaultDomainError from "../../../application/errors/domain/default-domain.error";
 import { Either, left, right } from "../../../common/helpers/Either";
 import BaseEntity from "../base-entity";
-import Card from "./card";
 import OrderItems, { OrderItem } from "./order-items";
 import Status from "./status";
 import TotalPrice from "./total-price";
@@ -13,7 +12,6 @@ export default class Order extends BaseEntity {
 		private readonly _items: OrderItems,
 		private readonly _totalPrice: TotalPrice,
 		private readonly _status: Status,
-		private readonly _card: Card,
 		private readonly _createdAt: Date,
 		id?: string
 	) {
@@ -24,24 +22,12 @@ export default class Order extends BaseEntity {
 		user_id: string,
 		items: OrderItem[],
 		total_price: number,
-		status: string,
-		card: {
-			number: string;
-			cvv: string;
-			expirationDate: string;
-			name: string;
-		}
+		status: string
 	): Either<DefaultDomainError, Order> {
 		const userIdOrError = UserId.create(user_id);
 		const totalPriceOrError = TotalPrice.create(total_price);
 		const statusOrError = Status.create(status);
 		const orderItemErrors = OrderItems.create(items);
-		const cardOrError = Card.create(
-			card.number,
-			card.cvv,
-			card.expirationDate,
-			card.name
-		);
 
 		if (userIdOrError.isLeft()) {
 			return left(userIdOrError.value);
@@ -59,17 +45,12 @@ export default class Order extends BaseEntity {
 			return left(orderItemErrors.value);
 		}
 
-		if (cardOrError.isLeft()) {
-			return left(cardOrError.value);
-		}
-
 		return right(
 			new Order(
 				userIdOrError.value,
 				orderItemErrors.value,
 				totalPriceOrError.value,
 				statusOrError.value,
-				cardOrError.value,
 				new Date()
 			)
 		);
@@ -81,13 +62,6 @@ export default class Order extends BaseEntity {
 		items: OrderItem[],
 		totalAmount: number,
 		status: string,
-		card: {
-			number: string;
-			cvv: string;
-			expirationDate: string;
-			name: string;
-			iv: string;
-		},
 		createdAt: Date
 	): Order {
 		return new Order(
@@ -95,13 +69,6 @@ export default class Order extends BaseEntity {
 			OrderItems.buildExisting(items),
 			TotalPrice.buildExisting(totalAmount),
 			Status.buildExisting(status),
-			Card.buildExisting(
-				card.number,
-				card.cvv,
-				card.expirationDate,
-				card.name,
-				card.iv
-			),
 			createdAt,
 			id
 		);
@@ -125,9 +92,5 @@ export default class Order extends BaseEntity {
 
 	public get createdAt(): Date {
 		return this._createdAt!;
-	}
-
-	public get card(): Card {
-		return this._card;
 	}
 }

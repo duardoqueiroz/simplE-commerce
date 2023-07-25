@@ -40,11 +40,6 @@ model orders {
   total_amount       Float
   order_items        order_items[]
   status             order_status
-  card_number        String
-  card_name          String
-  card_cvv           String
-  card_expires       String
-  card_encryption_iv String
   created_at         DateTime      @default(now())
 }
 

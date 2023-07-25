@@ -24,11 +24,6 @@ export default class PostgresOrderRepository implements IOrderRepository {
 				},
 				status: order_status[order.status as keyof typeof order_status],
 				user_id: order.userId,
-				card_cvv: order.card.cvv,
-				card_expires: order.card.expirationDate,
-				card_name: order.card.name,
-				card_number: order.card.number,
-				card_encryption_iv: order.card.iv,
 				created_at: order.createdAt,
 			},
 			select: {
@@ -44,11 +39,6 @@ export default class PostgresOrderRepository implements IOrderRepository {
 				total_amount: true,
 				user_id: true,
 				status: true,
-				card_number: true,
-				card_cvv: true,
-				card_expires: true,
-				card_name: true,
-				card_encryption_iv: true,
 				created_at: true,
 			},
 		});
@@ -64,13 +54,6 @@ export default class PostgresOrderRepository implements IOrderRepository {
 			}),
 			createdOrder.total_amount,
 			createdOrder.status,
-			{
-				cvv: createdOrder.card_cvv,
-				expirationDate: createdOrder.card_expires,
-				iv: createdOrder.card_encryption_iv,
-				name: createdOrder.card_name,
-				number: createdOrder.card_number,
-			},
 			createdOrder.created_at
 		);
 	}

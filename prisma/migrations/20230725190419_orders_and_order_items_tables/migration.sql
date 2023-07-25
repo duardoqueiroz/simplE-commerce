@@ -10,11 +10,6 @@ CREATE TABLE "orders" (
     "user_id" TEXT NOT NULL,
     "total_amount" DOUBLE PRECISION NOT NULL,
     "status" "order_status" NOT NULL,
-    "card_number" TEXT NOT NULL,
-    "card_name" TEXT NOT NULL,
-    "card_cvv" TEXT NOT NULL,
-    "card_expires" TEXT NOT NULL,
-		"card_encryption_iv" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "orders_pkey" PRIMARY KEY ("id")

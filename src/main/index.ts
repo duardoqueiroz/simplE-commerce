@@ -37,6 +37,7 @@ import FindActiveItemsHandler from "../infra/handlers/item/find-active-items-han
 import FindInactiveItemsHandler from "../infra/handlers/item/find-inactive-items-handler";
 import FindPendingItemsHandler from "../infra/handlers/item/find-pending-items-handler";
 import IsActiveItemOrUserIsItemOwnerMiddleware from "../infra/middlewares/is-active-item-or-user-is-item-owner";
+import QueueHandler from "../infra/queue/queue-handler";
 
 Env.initialize();
 
@@ -46,6 +47,7 @@ const tokenGenerator = new TokenGenerator(
 );
 const prismaService = new PrismaService();
 const queue = queueFactory.kafka(Env.get<string>("KAFKA_BROKER_ADDRESS"));
+new QueueHandler(queue);
 const server = serversFactory.express();
 const { itemRepository, userRepository, orderRepository } =
 	dbFactory.postgres(prismaService);

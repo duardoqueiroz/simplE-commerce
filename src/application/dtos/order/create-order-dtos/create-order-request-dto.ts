@@ -4,10 +4,5 @@ export type CreateOrderRequestDto = {
 		item_id: string;
 		quantity: number;
 	}[];
-	card: {
-		number: string;
-		name: string;
-		cvv: string;
-		expiration_date: string;
-	};
+	credit_card_token: string;
 };
