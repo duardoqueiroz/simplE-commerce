@@ -1,7 +1,7 @@
 import HttpHandler from "../../../application/contracts/http/http-handler";
 import { HttpRequest } from "../../../application/contracts/http/http-request";
 import { HttpResponse } from "../../../application/contracts/http/http-response";
-import { CreateItemRequestDto } from "../../../application/dtos/item/create-item-dtos/create-item-input-dto";
+import { CreateItemRequestDto } from "../../../application/dtos/item/create-item-dtos/create-item-request-dto";
 import ErrorHandler from "../../../common/services/error-handler";
 import ICreateItemUseCase from "../../../domain/use-cases/item/create-item-use-case";
 import BadRequestResponse from "../../responses/bad-request-response";

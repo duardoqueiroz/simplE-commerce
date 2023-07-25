@@ -24,8 +24,8 @@ export default class CreateOrderUseCase implements ICreateOrderUseCase {
 	public async execute(
 		input: CreateOrderRequestDto
 	): Promise<CreateOrderResponseDto> {
-		const { userId, items, card } = input;
-		const user = await this.userRepository.findById(userId);
+		const { user_id, items, card } = input;
+		const user = await this.userRepository.findById(user_id);
 		if (!user) {
 			return left(new UserNotFoundError());
 		}
@@ -48,7 +48,7 @@ export default class CreateOrderUseCase implements ICreateOrderUseCase {
 		}, 0);
 
 		const orderOrError = Order.create(
-			userId,
+			user_id,
 			orderItems,
 			totalPrice,
 			ORDER_STATUS.PENDING,
