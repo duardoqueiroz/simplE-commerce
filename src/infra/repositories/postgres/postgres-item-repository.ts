@@ -6,6 +6,63 @@ import IItemRepository from "../../../domain/repositories/item-repository";
 export default class PostgresItemRepository implements IItemRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
+	public async findPending(): Promise<Item[]> {
+		const items = await this.prisma.items.findMany({
+			where: {
+				status: item_status.PENDING,
+			},
+		});
+		return items.map((item) => {
+			return Item.buildExisting(
+				item.id,
+				item.user_id,
+				item.name,
+				item.description,
+				item.price,
+				item.category,
+				item.status
+			);
+		});
+	}
+
+	public async findActive(): Promise<Item[]> {
+		const items = await this.prisma.items.findMany({
+			where: {
+				status: item_status.ACTIVE,
+			},
+		});
+		return items.map((item) => {
+			return Item.buildExisting(
+				item.id,
+				item.user_id,
+				item.name,
+				item.description,
+				item.price,
+				item.category,
+				item.status
+			);
+		});
+	}
+
+	public async findInactive(): Promise<Item[]> {
+		const items = await this.prisma.items.findMany({
+			where: {
+				status: item_status.INACTIVE,
+			},
+		});
+		return items.map((item) => {
+			return Item.buildExisting(
+				item.id,
+				item.user_id,
+				item.name,
+				item.description,
+				item.price,
+				item.category,
+				item.status
+			);
+		});
+	}
+
 	public async create(item: Item): Promise<Item> {
 		const createdItem = await this.prisma.items.create({
 			data: {

@@ -30,6 +30,13 @@ import Env from "./config";
 import dbFactory from "./factories/database/db-factory";
 import serversFactory from "./factories/servers/servers-factory";
 import queueFactory from "./factories/queue/queue-factory";
+import FindPendingItemsUseCase from "../application/use-cases/item/find-pending-items-use-case";
+import FindActiveItemsUseCase from "../application/use-cases/item/find-active-items-use-case";
+import FindInactiveItemsUseCase from "../application/use-cases/item/find-inactive-items-use-case";
+import FindActiveItemsHandler from "../infra/handlers/item/find-active-items-handler";
+import FindInactiveItemsHandler from "../infra/handlers/item/find-inactive-items-handler";
+import FindPendingItemsHandler from "../infra/handlers/item/find-pending-items-handler";
+import IsActiveItemOrUserIsItemOwnerMiddleware from "../infra/middlewares/is-active-item-or-user-is-item-owner";
 
 Env.initialize();
 
@@ -50,6 +57,9 @@ const findUserUseCase = new FindUserUseCase(userRepository);
 const deleteUserUseCase = new DeleteUserUseCase(userRepository);
 const createItemUseCase = new CreateItemUseCase(itemRepository, userRepository);
 const findAllItemsUseCase = new FindAllItemsUseCase(itemRepository);
+const findPendingItemsUseCase = new FindPendingItemsUseCase(itemRepository);
+const findActiveItemsUseCase = new FindActiveItemsUseCase(itemRepository);
+const findInactiveItemsUseCase = new FindInactiveItemsUseCase(itemRepository);
 const findItemUseCase = new FindItemUseCase(itemRepository);
 const deleteItemUseCase = new DeleteItemUseCase(itemRepository);
 const activeItemUseCase = new ActiveItemUseCase(itemRepository);
@@ -67,6 +77,15 @@ const findUserHandler = new FindUserHandler(findUserUseCase);
 const deleteUserHandler = new DeleteUserHandler(deleteUserUseCase);
 const createItemHandler = new CreateItemHandler(createItemUseCase);
 const findAllItemsHandler = new FindAllItemsHandler(findAllItemsUseCase);
+const findPendingItemsHandler = new FindPendingItemsHandler(
+	findPendingItemsUseCase
+);
+const findActiveItemsHandler = new FindActiveItemsHandler(
+	findActiveItemsUseCase
+);
+const findInactiveItemsHandler = new FindInactiveItemsHandler(
+	findInactiveItemsUseCase
+);
 const findItemHandler = new FindItemHandler(findItemUseCase);
 const deleteItemHandler = new DeleteItemHandler(deleteItemUseCase);
 const activeItemHandler = new ActiveItemHandler(activeItemUseCase);
@@ -80,6 +99,12 @@ const loggedUserIsTargetUserMiddleware = new LoggedUserIsTargetUserMiddleware();
 const loggedUserIsTargetUserItemMiddleware =
 	new LoggedUserIsTargetUserItemMiddleware(itemRepository);
 const isAdminMiddleware = new IsAdminMiddleware(userRepository);
+const isActiveItemOrUserIsItemOwner =
+	new IsActiveItemOrUserIsItemOwnerMiddleware(
+		itemRepository,
+		userRepository,
+		tokenGenerator
+	);
 // -------------- ROUTES --------------
 server.register("post", "/sign-up", signUpHandler);
 server.register("post", "/sign-in", signInHandler);
@@ -98,8 +123,34 @@ server.register(
 	loggedUserIsTargetUserMiddleware
 );
 server.register("post", "/items", createItemHandler, isAuthenticatedMiddleware);
-server.register("get", "/items", findAllItemsHandler);
-server.register("get", "/items/:id", findItemHandler);
+server.register(
+	"get",
+	"/items",
+	findAllItemsHandler,
+	isAuthenticatedMiddleware,
+	isAdminMiddleware
+);
+server.register(
+	"get",
+	"/items/pending",
+	findPendingItemsHandler,
+	isAuthenticatedMiddleware,
+	isAdminMiddleware
+);
+server.register("get", "/items/active", findActiveItemsHandler);
+server.register(
+	"get",
+	"/items/inactive",
+	findInactiveItemsHandler,
+	isAuthenticatedMiddleware,
+	isAdminMiddleware
+);
+server.register(
+	"get",
+	"/items/:id",
+	findItemHandler,
+	isActiveItemOrUserIsItemOwner
+);
 server.register(
 	"delete",
 	"/items/:id",

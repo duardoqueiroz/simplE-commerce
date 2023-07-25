@@ -3,6 +3,7 @@ import { HttpResponse } from "../../application/contracts/http/http-response";
 import MiddlewareRequest from "../../application/contracts/http/middleware-request";
 import { objectKeyExists } from "../../common/helpers/ObjectsHelper";
 import IItemRepository from "../../domain/repositories/item-repository";
+import NotFoundResponse from "../responses/not-found-response";
 import UnauthorizedResponse from "../responses/unathorized-error-response";
 
 export default class LoggedUserIsTargetUserItemMiddleware
@@ -30,7 +31,7 @@ export default class LoggedUserIsTargetUserItemMiddleware
 		const targetItemId = `${request.params.id}`;
 		const targetItem = await this.itemRepository.findById(targetItemId);
 		if (!targetItem) {
-			return new UnauthorizedResponse("Item not found");
+			return new NotFoundResponse("Item not found");
 		}
 
 		if (loggedUserId !== targetItem.userId && !request.headers.is_admin) {
