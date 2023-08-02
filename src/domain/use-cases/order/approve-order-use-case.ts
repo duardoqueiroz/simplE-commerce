@@ -1,5 +1,5 @@
-import { FindOrderUseCaseResponseDto } from "../../../application/dtos/order/approve-order-dtos/find-order-response-dto";
+import { ApproveOrderUseCaseResponseDto } from "../../../application/dtos/order/approve-order-dtos/approve-order-response-dto";
 
 export default interface IApproveOrderUseCase {
-	execute(orderId: string): Promise<FindOrderUseCaseResponseDto>;
+	execute(orderId: string): Promise<ApproveOrderUseCaseResponseDto>;
 }
