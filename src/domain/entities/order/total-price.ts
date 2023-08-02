@@ -21,7 +21,7 @@ export default class TotalPrice {
 			error.messages = errorMessages;
 			return left(error);
 		}
-		return right(new TotalPrice(value));
+		return right(new TotalPrice(+value.toFixed(2)));
 	}
 
 	public static buildExisting(value: number): TotalPrice {

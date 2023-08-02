@@ -14,7 +14,7 @@ export default class Price {
 			error.messages = errorMessages;
 			return left(error);
 		}
-		return right(new Price(value));
+		return right(new Price(+value.toFixed(2)));
 	}
 
 	public static buildExisting(value: number): Price {
