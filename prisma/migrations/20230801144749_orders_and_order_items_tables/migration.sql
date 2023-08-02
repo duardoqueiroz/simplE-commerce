@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "order_status" AS ENUM ('PENDING', 'CONFIRMED', 'CANCELED', 'REFUSED');
+CREATE TYPE "order_status" AS ENUM ('PENDING', 'APPROVED', 'CANCELED', 'REFUSED');
 
 -- DropForeignKey
 ALTER TABLE "items" DROP CONSTRAINT "items_user_id_fkey";

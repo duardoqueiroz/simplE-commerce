@@ -1,3 +1,4 @@
+import { ORDER_STATUS } from "../../../@types/enums/ORDER_STATUS";
 import DefaultDomainError from "../../../application/errors/domain/default-domain.error";
 import { Either, left, right } from "../../../common/helpers/Either";
 import BaseEntity from "../base-entity";
@@ -11,7 +12,7 @@ export default class Order extends BaseEntity {
 		private readonly _userId: UserId,
 		private readonly _items: OrderItems,
 		private readonly _totalPrice: TotalPrice,
-		private readonly _status: Status,
+		private _status: Status,
 		private readonly _createdAt: Date,
 		id?: string
 	) {
@@ -92,5 +93,13 @@ export default class Order extends BaseEntity {
 
 	public get createdAt(): Date {
 		return this._createdAt!;
+	}
+
+	public approve() {
+		this._status.value = ORDER_STATUS.APPROVED;
+	}
+
+	public refuse() {
+		this._status.value = ORDER_STATUS.REFUSED;
 	}
 }

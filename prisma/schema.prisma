@@ -75,7 +75,7 @@ enum item_status {
 
 enum order_status {
   PENDING
-  CONFIRMED
+  APPROVED
   CANCELED
   REFUSED
 }
