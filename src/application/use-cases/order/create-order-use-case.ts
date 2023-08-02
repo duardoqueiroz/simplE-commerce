@@ -3,7 +3,7 @@ import { left, right } from "../../../common/helpers/Either";
 import ErrorHandler from "../../../common/services/error-handler";
 import Order from "../../../domain/entities/order/order";
 import { OrderItem } from "../../../domain/entities/order/order-items";
-import OrderReservedEvent from "../../../domain/events/order-reserved-event";
+import OrderCreatedEvent from "../../../domain/events/order-created-event";
 import IItemRepository from "../../../domain/repositories/item-repository";
 import IOrderRepository from "../../../domain/repositories/order-repository";
 import IUserRepository from "../../../domain/repositories/user-repository";
@@ -61,13 +61,13 @@ export default class CreateOrderUseCase implements ICreateOrderUseCase {
 		}
 
 		const order = await this.orderRepository.create(orderOrError.value);
-		const orderReservedEvent = new OrderReservedEvent(
+		const orderCreatedEvent = new OrderCreatedEvent(
 			order.id,
 			order.userId,
 			order.totalPrice,
 			credit_card_token
 		);
-		await this.queueService.emit("ORDER_RESERVED", orderReservedEvent);
+		await this.queueService.emit("ORDER_CREATED", orderCreatedEvent);
 		return right({
 			id: order.id,
 			user_id: order.userId,
