@@ -51,7 +51,7 @@ const tokenGenerator = new TokenGenerator(
 	Env.get<string>("JWT_EXPIRES_IN")
 );
 const paymentGateway = new StripePaymentGateway(
-	Env.get<string>("PAYMENT_GATEWAY_SECRET")
+	Env.get<string>("STRIPE_SECRET")
 );
 const prismaService = new PrismaService();
 const queue = queueFactory.rabbitmq(Env.get<string>("RABBIT_MQ_URL"));

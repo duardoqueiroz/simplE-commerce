@@ -6,7 +6,7 @@ class Env {
 	} = {
 		JWT_SECRET: "string",
 		JWT_EXPIRES_IN: "string",
-		PAYMENT_GATEWAY_SECRET: "string",
+		STRIPE_SECRET: "string",
 		RABBIT_MQ_URL: "string",
 		// KAFKA_BROKER_ADDRESS: "string",
 	};
