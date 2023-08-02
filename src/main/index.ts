@@ -26,7 +26,7 @@ import IsAdminMiddleware from "../infra/middlewares/is-admin-middleware";
 import IsAuthenticatedMiddleware from "../infra/middlewares/is-authenticated-middleware";
 import LoggedUserIsTargetUserMiddleware from "../infra/middlewares/logged-user-is-target-user";
 import LoggedUserIsTargetUserItemMiddleware from "../infra/middlewares/logged-user-is-target-user-item";
-import Env from "./config";
+import Env from "./env";
 import dbFactory from "./factories/database/db-factory";
 import serversFactory from "./factories/servers/servers-factory";
 import queueFactory from "./factories/queue/queue-factory";
@@ -38,6 +38,11 @@ import FindInactiveItemsHandler from "../infra/handlers/item/find-inactive-items
 import FindPendingItemsHandler from "../infra/handlers/item/find-pending-items-handler";
 import IsActiveItemOrUserIsItemOwnerMiddleware from "../infra/middlewares/is-active-item-or-user-is-item-owner";
 import QueueHandler from "../infra/queue/queue-handler";
+import StripePaymentGateway from "../infra/gateway/stripe-payment-gateway";
+import ProcessPaymentUseCase from "../application/use-cases/order/process-payment-use-case";
+import ApproveOrderUseCase from "../application/use-cases/order/approve-order-use-case";
+import RefuseOrderUseCase from "../application/use-cases/order/refuse-order-use-case";
+import logger from "./logger";
 
 Env.initialize();
 
@@ -45,9 +50,11 @@ const tokenGenerator = new TokenGenerator(
 	Env.get<string>("JWT_SECRET"),
 	Env.get<string>("JWT_EXPIRES_IN")
 );
+const paymentGateway = new StripePaymentGateway(
+	Env.get<string>("PAYMENT_GATEWAY_SECRET")
+);
 const prismaService = new PrismaService();
-const queue = queueFactory.kafka(Env.get<string>("KAFKA_BROKER_ADDRESS"));
-new QueueHandler(queue);
+const queue = queueFactory.rabbitmq(Env.get<string>("RABBIT_MQ_URL"));
 const server = serversFactory.express();
 const { itemRepository, userRepository, orderRepository } =
 	dbFactory.postgres(prismaService);
@@ -71,6 +78,9 @@ const createOrderUseCase = new CreateOrderUseCase(
 	userRepository,
 	queue
 );
+const processPaymentUseCase = new ProcessPaymentUseCase(paymentGateway, queue);
+const approveOrderUseCase = new ApproveOrderUseCase(orderRepository);
+const refuseOrderUseCase = new RefuseOrderUseCase(orderRepository);
 // -------------- HANDLERS --------------
 const signUpHandler = new SignUpHandler(createUserUseCase);
 const signInHandler = new SignInHandler(signUpUseCase);
@@ -176,16 +186,23 @@ server.register(
 
 // -------------- MAIN --------------
 async function main() {
+	logger.info("Connecting to queue service");
+	await queue.connect();
+	logger.info("Connecting to database service");
+	await prismaService.connect();
+	logger.info("Starting queue handler");
+	new QueueHandler(
+		queue,
+		processPaymentUseCase,
+		approveOrderUseCase,
+		refuseOrderUseCase
+	);
+	logger.info("Starting server");
 	await server.start(Env.get("PORT"));
 }
 
-main()
-	.then(async () => {
-		await queue.connect();
-		await prismaService.connect();
-	})
-	.catch(async (err) => {
-		console.error(err);
-		await queue.disconnect();
-		await prismaService.disconnect();
-	});
+main().catch(async (err) => {
+	logger.error(err.message);
+	await queue.disconnect();
+	await prismaService.disconnect();
+});
