@@ -1,5 +1,5 @@
 import { Consumer, Kafka, KafkaConfig, Producer } from "kafkajs";
-import Queue from "../../application/contracts/queue/queue";
+import Queue from "../../../application/contracts/queue/queue";
 
 export default class KafkaService implements Queue {
 	producer: Producer;
@@ -25,6 +25,9 @@ export default class KafkaService implements Queue {
 		await this.consumer.disconnect();
 	}
 
+	/*
+		Doesn't work correctly
+	*/
 	public async on(event: string, callback: Function): Promise<void> {
 		await this.consumer.subscribe({ topic: event, fromBeginning: true });
 		await this.consumer.run({
