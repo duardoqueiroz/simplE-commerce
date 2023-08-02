@@ -6,10 +6,9 @@ class Env {
 	} = {
 		JWT_SECRET: "string",
 		JWT_EXPIRES_IN: "string",
-		KAFKA_BROKER_ADDRESS: "string",
-		CARD_ENCRYPTION_KEY: "string",
-		CARD_ENCRYPTION_ALGORITHM: "string",
-		CARD_ENCRYPTION_IV: "string",
+		PAYMENT_GATEWAY_SECRET: "string",
+		RABBIT_MQ_URL: "string",
+		// KAFKA_BROKER_ADDRESS: "string",
 	};
 
 	private constructor() {
