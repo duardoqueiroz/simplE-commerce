@@ -4,6 +4,6 @@ export default class InvalidPasswordError extends ValidationError {
 	public name: string = "InvalidPasswordError";
 
 	constructor(message?: string) {
-		super(message, "name");
+		super(message, "password");
 	}
 }
